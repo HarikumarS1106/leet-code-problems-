@@ -1,0 +1,13 @@
+
+for (int k = 0; k < n * n; k++) {
+    int i = k / n;
+    int j = k % n;
+
+    if (i == j || i + j == n - 1) {
+        System.out.print("* ");
+    } else {
+        System.out.print("  ");
+    }
+
+    if (j == n - 1) System.out.println();
+}
