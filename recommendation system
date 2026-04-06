@@ -1,0 +1,162 @@
+import java.util.*;
+
+class RecommendationSystem {
+    void process() {
+        System.out.println("System processing...");
+    }
+}
+
+class Item {
+    private String name;
+    private String category;
+
+    Item(String name, String category) {
+        this.name = name;
+        this.category = category;
+    }
+
+    String getName() { return name; }
+    String getCategory() { return category; }
+}
+
+class User {
+    private String name;
+    private List<String> preferences;
+
+    User(String name) {
+        this.name = name;
+        preferences = new ArrayList<>();
+    }
+
+    void addPreference(String category) {
+        if (!preferences.contains(category)) {
+            preferences.add(category);
+        }
+    }
+
+    String getName() { return name; }
+    List<String> getPreferences() { return preferences; }
+}
+
+abstract class RecommendStrategy extends RecommendationSystem {
+    abstract List<Item> recommend(User user, List<Item> items);
+}
+
+class BasicRecommend extends RecommendStrategy {
+    void process() {
+        System.out.println("Basic Recommendation Processing...");
+    }
+
+    List<Item> recommend(User user, List<Item> items) {
+        List<Item> result = new ArrayList<>();
+
+        for (Item item : items) {
+            if (user.getPreferences().contains(item.getCategory())) {
+                result.add(item);
+            }
+        }
+
+        for (Item item : items) {
+            if (!result.contains(item)) {
+                result.add(item);
+            }
+        }
+
+        return result;
+    }
+}
+
+class AdvancedRecommend extends RecommendStrategy {
+    void process() {
+        System.out.println("Advanced Recommendation Processing...");
+    }
+
+    List<Item> recommend(User user, List<Item> items) {
+        List<Item> result = new ArrayList<>();
+
+        for (Item item : items) {
+            if (user.getPreferences().contains(item.getCategory())) {
+                result.add(item);
+            }
+        }
+
+        return result;
+    }
+}
+
+class Manager {
+    void takeRequest(String userName) {
+        System.out.println("Request taken successfully from " + userName);
+    }
+}
+
+class Display {
+    void show(List<Item> items, String userName) {
+        System.out.println("\nRecommendations for " + userName + ":");
+        for (Item i : items) {
+            System.out.println("- " + i.getName() + " (" + i.getCategory() + ")");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Item> items = new ArrayList<>();
+
+        items.add(new Item("Laptop", "Electronics"));
+        items.add(new Item("Phone", "Electronics"));
+        items.add(new Item("Shirt", "Clothing"));
+        items.add(new Item("Shoes", "Footwear"));
+
+        Manager manager = new Manager();
+        Display display = new Display();
+
+        while (true) {
+            System.out.println("\n1.Get Recommendation  2.Exit");
+            int choice = sc.nextInt();
+            sc.nextLine();
+
+            if (choice == 1) {
+
+                System.out.print("Enter User Name: ");
+                String name = sc.nextLine();
+
+                User user = new User(name);
+
+                manager.takeRequest(name);
+
+                System.out.print("Enter number of preferences: ");
+                int n = sc.nextInt();
+                sc.nextLine();
+
+                for (int i = 0; i < n; i++) {
+                    System.out.print("Enter category: ");
+                    user.addPreference(sc.nextLine());
+                }
+
+                System.out.print("Choose Type (1.Basic 2.Advanced): ");
+                int type = sc.nextInt();
+
+                RecommendStrategy strategy;
+
+                if (type == 1) {
+                    strategy = new BasicRecommend();
+                } else {
+                    strategy = new AdvancedRecommend();
+                }
+
+                strategy.process();
+
+                List<Item> result = strategy.recommend(user, items);
+
+                display.show(result, user.getName());
+            } else {
+                break;
+            }
+        }
+
+        sc.close();
+    }
+}
